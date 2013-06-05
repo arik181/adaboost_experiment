@@ -2,6 +2,9 @@
 \usepackage{url} 
 \usepackage{fullpage} 
 \usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \title{Homework 3: Support Vector Machines and Boosting}
 \author{Devin Quirozoliver\\arik182@cs.pdx.edu, 904032321}
@@ -26,24 +29,33 @@
 \vspace{2pt}\hspace{2pt}From the ROC curve, we can tell that the classifier clearly performed more strongly on negative cases than on positive cases in the test data. The classifier performed reasonably well, as expected, with 90\% accuracy on the test data, 82\% recall and 82\% precision.\\
 \vspace{0.5pt}
 \begin{figure}[h]
-\begin{tabular}{|l|l|}
-\hline
-\multicolumn{2}{|c|}{\textbf{Experiment 1 statistics}} \\
-\hline
-\textbf{ TP } & 1198 \\
-\textbf{ FP } & 256 \\
-\textbf{ TN } & 2101 \\
-\textbf{ FN } & 126 \\
-\textbf{ P } &  1454 \\
-\textbf{ N } & 2227 \\
-\textbf{ FPR } & 0.11 \\
-\textbf{ TPR } & 0.90 \\
-\hline
-\textbf{ Precision } & 0.82 \\
-\textbf{ Recall    } & 0.82 \\
-\textbf{ Accuracy  } & 0.90 \\
-\hline
-\end{tabular}
+\centering
+    \begin{subfigure}[h]{0.4\textwidth}
+        \centering
+        \begin{tabular}{|l|l|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Experiment 1 statistics}} \\
+        \hline
+        \textbf{ TP } & 1198 \\
+        \textbf{ FP } & 256 \\
+        \textbf{ TN } & 2101 \\
+        \textbf{ FN } & 126 \\
+        \textbf{ P } &  1454 \\
+        \textbf{ N } & 2227 \\
+        \textbf{ FPR } & 0.11 \\
+        \textbf{ TPR } & 0.90 \\
+        \hline
+        \textbf{ Precision } & 0.82 \\
+        \textbf{ Recall    } & 0.82 \\
+        \textbf{ Accuracy  } & 0.90 \\
+        \hline
+        \end{tabular}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ROC1.png}
+        \caption{ROC curve for svm\_light}
+    \end{subfigure}
 \end{figure}
     
 }
@@ -55,95 +67,115 @@
 \vspace{2pt} \hspace{2pt}There are a number of possible explanations for this behavior. First, the algorithm could be represented incorrectly in the code. During the construction of the adaboost implementation, two different normalization factors were used, first a simple average across the data, and then the normalizer Z\_t, represented below. Neither of these seemed to improve the performance of the classifier. Another possible cause for the weakness of the adaboost implementation is the use of a strong algorithm. It has been noted that the adaboost algorithm performs better when given a collection of comparatively weak classifiers. The classifiers used in the boosting algorithm were very similar in terms of their accuracy and precision, deviating no more than plus or minus 5\%. A third possible cause of the weakness, perhaps the most likely, is a poor implementation of the change in weights prior to boosting. \\
 \vspace{0.5pt}
 \begin{figure}[h]
-\begin{tabular}{|l|l|}
-\hline
-\multicolumn{2}{|c|}{\textbf{Correct classifications}}\\
-\hline
-\textbf{ H correct } & 3207 \\
-\textbf{ h[0] correct } & 3245 \\
-\textbf{ h[1] correct } & 3182 \\
-\textbf{ h[2] correct } & 3257 \\
-\textbf{ h[3] correct } & 3271 \\
-\textbf{ h[4] correct } & 3169 \\
-\textbf{ h[5] correct } & 3296 \\
-\textbf{ h[6] correct } & 3219 \\
-\textbf{ h[7] correct } & 3241 \\
-\textbf{ h[8] correct } & 3298 \\
-\textbf{ h[9] correct } & 3205 \\
-\hline
-\end{tabular}
-\hspace{5pt}
-\vspace{2pt}
-\begin{tabular}{|l|l|}
-\hline
-\textbf{Experiment 2 statistics} & \\
-\hline
-\textbf{ TP } & 1313 \\
-\textbf{ FP } & 333 \\
-\textbf{ TN } & 1894 \\
-\textbf{ FN } & 141 \\
-\textbf{ P } &  1646 \\
-\textbf{ N } & 2035 \\
-\textbf{ FPR } & 0.16 \\
-\textbf{ TPR } & 0.80 \\
-\hline
-\textbf{ Precision } & 0.80\\
-\textbf{ Recall    } & 0.80\\
-\textbf{ Accuracy  } & 0.87\\
-\hline
-\end{tabular}
-\caption{h[t] represents each of ten weak classifiers used in training the ensemble hypothesis H}
+\centering
+    \begin{subfigure}[h]{0.3\textwidth}
+        \centering
+        \begin{tabular}{|l|l|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Correct classifications}}\\
+        \hline
+        \textbf{ H correct } & 3207 \\
+        \textbf{ h[0] correct } & 3245 \\
+        \textbf{ h[1] correct } & 3182 \\
+        \textbf{ h[2] correct } & 3257 \\
+        \textbf{ h[3] correct } & 3271 \\
+        \textbf{ h[4] correct } & 3169 \\
+        \textbf{ h[5] correct } & 3296 \\
+        \textbf{ h[6] correct } & 3219 \\
+        \textbf{ h[7] correct } & 3241 \\
+        \textbf{ h[8] correct } & 3298 \\
+        \textbf{ h[9] correct } & 3205 \\
+        \hline
+        \end{tabular}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.3\textwidth}
+        \centering
+        \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Experiment 2 statistics} & \\
+        \hline
+        \textbf{ TP } & 1313 \\
+        \textbf{ FP } & 333 \\
+        \textbf{ TN } & 1894 \\
+        \textbf{ FN } & 141 \\
+        \textbf{ P } &  1646 \\
+        \textbf{ N } & 2035 \\
+        \textbf{ FPR } & 0.16 \\
+        \textbf{ TPR } & 0.80 \\
+        \hline
+        \textbf{ Precision } & 0.80\\
+        \textbf{ Recall    } & 0.80\\
+        \textbf{ Accuracy  } & 0.87\\
+        \hline
+        \end{tabular}
+    \end{subfigure}
+    \caption{h[t] represents each of ten weak classifiers used in training the ensemble hypothesis H}
 \end{figure}
-
-}
-
 \pagebreak
+\begin{figure}[h]
+\centering
+    \includegraphics[width=0.4\textwidth]{ROC2.png}
+    \caption{ROC curve for experiment 2}
+\end{figure}
+}
 
 \section[6]{Experiment 3} {
 
 \vspace{2pt} \hspace{2pt}The third experiment saw an increase from 10 iterations to 20 iterations of the boosting algorithm. The algorithm performance was similar to that of the second experiment, with little difference between the accuracy of the classifiers.\\
 \vspace{0.5pt}
 \begin{figure}[h]
-\begin{tabular}{|l|l|}
-\hline
-\multicolumn{2}{|c|}{\textbf{Correct classifications}}\\
-\hline
-\textbf{ H correct } & 3212 \\
-\textbf{ h[0] correct } & 3264 \\
-\textbf{ h[1] correct } & 3225 \\
-\textbf{ h[2] correct } & 3292 \\
-\textbf{ h[3] correct } & 3267 \\
-\textbf{ h[4] correct } & 3259 \\
-\textbf{ h[5] correct } & 3234 \\
-\textbf{ h[6] correct } & 3251 \\
-\textbf{ h[7] correct } & 3261 \\
-\textbf{ h[8] correct } & 3213 \\
-\textbf{ h[9] correct } & 3258 \\
-\hline
-\end{tabular}
-\hspace{5pt}
-\vspace{2pt}
-\begin{tabular}{|l|l|}
-\hline
-\textbf{Experiment 3 statistics} & \\
-\hline
-\textbf{ TP } & 1316 \\
-\textbf{ FP } & 331 \\
-\textbf{ TN } & 1896 \\
-\textbf{ FN } & 138 \\
-\textbf{ P } &  1647 \\
-\textbf{ N } & 2034 \\
-\textbf{ FPR } & 0.16 \\
-\textbf{ TPR } & 0.80 \\
-\hline
-\textbf{ Precision } & 0.80\\
-\textbf{ Recall    } & 0.80\\
-\textbf{ Accuracy  } & 0.87\\
-\hline
-\end{tabular}
-\caption{h[t] represents each of ten weak classifiers used in training the ensemble hypothesis H}
+\centering
+    \begin{subfigure}[h]{0.3\textwidth}
+    \centering
+        \begin{tabular}{|l|l|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Correct classifications}}\\
+        \hline
+        \textbf{ H correct } & 3212 \\
+        \textbf{ h[0] correct } & 3264 \\
+        \textbf{ h[1] correct } & 3225 \\
+        \textbf{ h[2] correct } & 3292 \\
+        \textbf{ h[3] correct } & 3267 \\
+        \textbf{ h[4] correct } & 3259 \\
+        \textbf{ h[5] correct } & 3234 \\
+        \textbf{ h[6] correct } & 3251 \\
+        \textbf{ h[7] correct } & 3261 \\
+        \textbf{ h[8] correct } & 3213 \\
+        \textbf{ h[9] correct } & 3258 \\
+        \hline
+        \end{tabular}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.3\textwidth}
+    \centering
+        \hspace{5pt}
+        \vspace{2pt}
+        \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Experiment 3 statistics} & \\
+        \hline
+        \textbf{ TP } & 1316 \\
+        \textbf{ FP } & 331 \\
+        \textbf{ TN } & 1896 \\
+        \textbf{ FN } & 138 \\
+        \textbf{ P } &  1647 \\
+        \textbf{ N } & 2034 \\
+        \textbf{ FPR } & 0.16 \\
+        \textbf{ TPR } & 0.80 \\
+        \hline
+        \textbf{ Precision } & 0.80\\
+        \textbf{ Recall    } & 0.80\\
+        \textbf{ Accuracy  } & 0.87\\
+        \hline
+        \end{tabular}
+    \end{subfigure}
+    \caption{h[t] represents each of ten weak classifiers used in training the ensemble hypothesis H}
 \end{figure}
-
+\pagebreak
+\begin{figure}[h]
+\centering
+    \includegraphics[width=0.4\textwidth]{ROC3.png}
+    \caption{ROC curve for experiment 3}
+\end{figure}
 }
 
 \section[7]{Summary and Observations} {
