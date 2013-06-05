@@ -1,0 +1,188 @@
+How to use
+
+This section explains how to use the SVMlight software. A good
+introduction to the theory of SVMs is Chris Burges' tutorial.
+
+SVMlight consists of a learning module (svm_learn) and a
+classification module (svm_classify). The classification module can be
+used to apply the learned model to new examples. See also the examples
+below for how to use svm_learn and svm_classify.
+
+svm_learn is called with the following parameters:
+
+svm_learn [options] example_file model_file
+
+Available options are:
+
+General options:
+         -?          - this help
+         -v [0..3]   - verbosity level (default 1)
+Learning options:
+         -z {c,r,p}  - select between classification (c), regression (r), and 
+                       preference ranking (p) (see [Joachims, 2002c])
+                       (default classification)          
+         -c float    - C: trade-off between training error
+                       and margin (default [avg. x*x]^-1)
+         -w [0..]    - epsilon width of tube for regression
+                       (default 0.1)
+         -j float    - Cost: cost-factor, by which training errors on
+                       positive examples outweight errors on negative
+                       examples (default 1) (see [Morik et al., 1999])
+         -b [0,1]    - use biased hyperplane (i.e. x*w+b0) instead
+                       of unbiased hyperplane (i.e. x*w0) (default 1)
+         -i [0,1]    - remove inconsistent training examples
+                       and retrain (default 0)
+Performance estimation options:
+         -x [0,1]    - compute leave-one-out estimates (default 0)
+                       (see [5])
+         -o ]0..2]   - value of rho for XiAlpha-estimator and for pruning
+                       leave-one-out computation (default 1.0) 
+                       (see [Joachims, 2002a])
+         -k [0..100] - search depth for extended XiAlpha-estimator
+                       (default 0)
+Transduction options (see [Joachims, 1999c], [Joachims, 2002a]):
+         -p [0..1]   - fraction of unlabeled examples to be classified
+                       into the positive class (default is the ratio of
+                       positive and negative examples in the training data)
+Kernel options:
+         -t int      - type of kernel function:
+                        0: linear (default)
+                        1: polynomial (s a*b+c)^d
+                        2: radial basis function exp(-gamma ||a-b||^2)
+                        3: sigmoid tanh(s a*b + c)
+                        4: user defined kernel from kernel.h
+         -d int      - parameter d in polynomial kernel
+         -g float    - parameter gamma in rbf kernel
+         -s float    - parameter s in sigmoid/poly kernel
+         -r float    - parameter c in sigmoid/poly kernel
+         -u string   - parameter of user defined kernel
+Optimization options (see [Joachims, 1999a], [Joachims, 2002a]):
+         -q [2..]    - maximum size of QP-subproblems (default 10)
+         -n [2..q]   - number of new variables entering the working set
+                       in each iteration (default n = q). Set n<q to prevent
+                       zig-zagging.
+         -m [5..]    - size of cache for kernel evaluations in MB (default 40)
+                       The larger the faster...
+         -e float    - eps: Allow that error for termination criterion
+                       [y [w*x+b] - 1] = eps (default 0.001) 
+         -h [5..]    - number of iterations a variable needs to be
+                       optimal before considered for shrinking (default 100) 
+         -f [0,1]    - do final optimality check for variables removed by
+                       shrinking. Although this test is usually positive, there
+                       is no guarantee that the optimum was found if the test is
+                       omitted. (default 1) 
+         -y string   -> if option is given, reads alphas from file with given
+                        and uses them as starting point. (default 'disabled')
+         -# int      -> terminate optimization, if no progress after this
+                        number of iterations. (default 100000)
+Output options: 
+         -l char     - file to write predicted labels of unlabeled examples 
+                       into after transductive learning 
+         -a char     - write all alphas to this file after learning (in the 
+                       same order as in the training set)
+
+A more detailed description of the parameters and how they link to the
+respective algorithms is given in the appendix of [Joachims, 2002a].
+
+The input file example_file contains the training examples. The first
+lines may contain comments and are ignored if they start with #. Each
+of the following lines represents one training example and is of the
+following format:
+
+<line> .=. <target> <feature>:<value> <feature>:<value> ... <feature>:<value> # <info>
+<target> .=. +1 | -1 | 0 | <float> 
+<feature> .=. <integer> | "qid"
+<value> .=. <float>
+<info> .=. <string>
+
+The target value and each of the feature/value pairs are separated by
+a space character. Feature/value pairs MUST be ordered by increasing
+feature number. Features with value zero can be skipped. The string
+<info> can be used to pass additional information to the kernel
+(e.g. non feature vector data).
+
+In classification mode, the target value denotes the class of the
+example. +1 as the target value marks a positive example, -1 a
+negative example respectively. So, for example, the line
+
+    -1 1:0.43 3:0.12 9284:0.2 # abcdef
+
+specifies a negative example for which feature number 1 has the value
+0.43, feature number 3 has the value 0.12, feature number 9284 has the
+value 0.2, and all the other features have value 0. In addition, the
+string abcdef is stored with the vector, which can serve as a way of
+providing additional information for user defined kernels. A class
+label of 0 indicates that this example should be classified using
+transduction. The predictions for the examples classified by
+transduction are written to the file specified through the -l
+option. The order of the predictions is the same as in the training
+data.
+
+In regression mode, the <target> contains the real-valued target
+value.
+
+In ranking mode [Joachims, 2002c], the target value is used to
+generated pairwise preference constraints (see STRIVER). A preference
+constraint is included for all pairs of examples in the example_file,
+for which the target value differs. The special feature "qid" can be
+used to restrict the generation of constraints. Two examples are
+considered for a pairwise preference constraint only, if the value of
+"qid" is the same. For example, given the example_file
+
+    3 qid:1 1:0.53 2:0.12
+    2 qid:1 1:0.13 2:0.1
+    7 qid:2 1:0.87 2:0.12
+
+a preference constraint is included only for the first and the second
+example(ie. the first should be ranked higher than the second), but
+not with the third example, since it has a different "qid".
+
+In all modes, the result of svm_learn is the model which is learned
+from the training data in example_file. The model is written to
+model_file. To make predictions on test examples, svm_classify reads
+this file. svm_classify is called with the following parameters:
+
+svm_classify [options] example_file model_file output_file
+
+Available options are:
+
+-h         Help. 
+-v [0..3]  Verbosity level (default 2).
+-f [0,1]   0: old output format of V1.0
+           1: output the value of decision function (default)
+
+The test examples in example_file are given in the same format as the
+training examples (possibly with 0 as class label). For all test
+examples in example_file the predicted values are written to
+output_file. There is one line per test example in output_file
+containing the value of the decision function on that example. For
+classification, the sign of this value determines the predicted
+class. For regression, it is the predicted value itself, and for
+ranking the value can be used to order the test examples. The test
+example file has the same format as the one for svm_learn. Again,
+<class> can have the value zero indicating unknown.
+
+If you want to find out more, try this FAQ.
+Getting started: some Example Problems
+Inductive SVM
+
+You will find an example text classification problem at
+
+http://download.joachims.org/svm_light/examples/example1.tar.gz
+
+Download this file into your svm_light directory and unpack it with
+
+gunzip -c example1.tar.gz | tar xvf -
+
+This will create a subdirectory example1. Documents are represented as
+feature vectors. Each feature corresponds to a word stem (9947
+features). The task is to learn which Reuters articles are about
+"corporate acquisitions". There are 1000 positive and 1000 negative
+examples in the file train.dat. The file test.dat contains 600 test
+examples. The feature numbers correspond to the line numbers in the
+file words. To run the example, execute the commands:
+
+svm_learn example1/train.dat example1/model
+svm_classify example1/test.dat example1/model example1/predictions
+
+The accuracy on the test set is printed to stdout. 

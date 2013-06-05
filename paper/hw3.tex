@@ -1,0 +1,154 @@
+\documentclass[titlepage,11pt]{article}
+\usepackage{url} 
+\usepackage{fullpage} 
+\usepackage{textcomp}
+
+\title{Homework 3: Support Vector Machines and Boosting}
+\author{Devin Quirozoliver\\arik182@cs.pdx.edu, 904032321}
+
+
+\begin{document}
+\maketitle
+
+\section[1]{Introduction} {
+\vspace{2pt} \hspace{2pt} The following is a brief analysis of an SVM classifier before and after boosting using the adaboost algorithm. The SVM classifier is svm\_light, which is available at \url{http://svmlight.joachims.org} for download. The data set provided to the classifier represents a collection of email containing a certain quantity of spam. The dataset can be found at \url{http://web.cecs.pdx.edu/~mm/MachineLearningSpring2013/spam.zip} for download. Three experiments were performed. During the first, svm\_light was simply used to classify the data, and this was analyzed using the ROC.py script. During the second experiment, the adaboost algorithm was applied to results from the original classifier in order to boost the accuracy of the experiment. 10 iterations of boosting were used to increase performance of the classifier. During the third experiment the adaboost algorithm was also used, this time with 20 boosting iterations.
+}
+
+\section[2]{Setup} {
+\vspace{2pt} \hspace{2pt} The source code for this program was written in python, and can be found on my github account at \url{https://github.com/arik181/adaboost\_experiment.} In order to run this experiment, you will need python 2.7. Compatibility with other versions of python has not been tested.
+}
+
+\section[3]{Overview} {
+}
+
+\section[4]{Experiment 1} {
+
+\vspace{2pt}\hspace{2pt}From the ROC curve, we can tell that the classifier clearly performed more strongly on negative cases than on positive cases in the test data. The classifier performed reasonably well, as expected, with 90\% accuracy on the test data, 82\% recall and 82\% precision.\\
+\vspace{0.5pt}
+\begin{figure}[h]
+\begin{tabular}{|l|l|}
+\hline
+\multicolumn{2}{|c|}{\textbf{Experiment 1 statistics}} \\
+\hline
+\textbf{ TP } & 1198 \\
+\textbf{ FP } & 256 \\
+\textbf{ TN } & 2101 \\
+\textbf{ FN } & 126 \\
+\textbf{ P } &  1454 \\
+\textbf{ N } & 2227 \\
+\textbf{ FPR } & 0.11 \\
+\textbf{ TPR } & 0.90 \\
+\hline
+\textbf{ Precision } & 0.82 \\
+\textbf{ Recall    } & 0.82 \\
+\textbf{ Accuracy  } & 0.90 \\
+\hline
+\end{tabular}
+\end{figure}
+    
+}
+
+\pagebreak
+
+\section[5]{Experiment 2} {
+\vspace{2pt} \hspace{2pt}During this second experiment, the adaboost algorithm was used to boost the performance of the svm\_light algorithm. 10 boosting iterations were performed in total, and 10 weak hypothesis were generated in order to create an ensemble hypothesis. Unfortunately, the new hypothesis performed worse, on average than the svm\_light classifier working alone. In fact, I am uncertain whether the performance of adaboost in this instance was significantly better than a selection at random for each feature from the set of hypothesis used by adaboost. \\
+\vspace{2pt} \hspace{2pt}There are a number of possible explanations for this behavior. First, the algorithm could be represented incorrectly in the code. During the construction of the adaboost implementation, two different normalization factors were used, first a simple average across the data, and then the normalizer Z\_t, represented below. Neither of these seemed to improve the performance of the classifier. Another possible cause for the weakness of the adaboost implementation is the use of a strong algorithm. It has been noted that the adaboost algorithm performs better when given a collection of comparatively weak classifiers. The classifiers used in the boosting algorithm were very similar in terms of their accuracy and precision, deviating no more than plus or minus 5\%. A third possible cause of the weakness, perhaps the most likely, is a poor implementation of the change in weights prior to boosting. \\
+\vspace{0.5pt}
+\begin{figure}[h]
+\begin{tabular}{|l|l|}
+\hline
+\multicolumn{2}{|c|}{\textbf{Correct classifications}}\\
+\hline
+\textbf{ H correct } & 3207 \\
+\textbf{ h[0] correct } & 3245 \\
+\textbf{ h[1] correct } & 3182 \\
+\textbf{ h[2] correct } & 3257 \\
+\textbf{ h[3] correct } & 3271 \\
+\textbf{ h[4] correct } & 3169 \\
+\textbf{ h[5] correct } & 3296 \\
+\textbf{ h[6] correct } & 3219 \\
+\textbf{ h[7] correct } & 3241 \\
+\textbf{ h[8] correct } & 3298 \\
+\textbf{ h[9] correct } & 3205 \\
+\hline
+\end{tabular}
+\hspace{5pt}
+\vspace{2pt}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Experiment 2 statistics} & \\
+\hline
+\textbf{ TP } & 1313 \\
+\textbf{ FP } & 333 \\
+\textbf{ TN } & 1894 \\
+\textbf{ FN } & 141 \\
+\textbf{ P } &  1646 \\
+\textbf{ N } & 2035 \\
+\textbf{ FPR } & 0.16 \\
+\textbf{ TPR } & 0.80 \\
+\hline
+\textbf{ Precision } & 0.80\\
+\textbf{ Recall    } & 0.80\\
+\textbf{ Accuracy  } & 0.87\\
+\hline
+\end{tabular}
+\caption{h[t] represents each of ten weak classifiers used in training the ensemble hypothesis H}
+\end{figure}
+
+}
+
+\pagebreak
+
+\section[6]{Experiment 3} {
+
+\vspace{2pt} \hspace{2pt}The third experiment saw an increase from 10 iterations to 20 iterations of the boosting algorithm. The algorithm performance was similar to that of the second experiment, with little difference between the accuracy of the classifiers.\\
+\vspace{0.5pt}
+\begin{figure}[h]
+\begin{tabular}{|l|l|}
+\hline
+\multicolumn{2}{|c|}{\textbf{Correct classifications}}\\
+\hline
+\textbf{ H correct } & 3212 \\
+\textbf{ h[0] correct } & 3264 \\
+\textbf{ h[1] correct } & 3225 \\
+\textbf{ h[2] correct } & 3292 \\
+\textbf{ h[3] correct } & 3267 \\
+\textbf{ h[4] correct } & 3259 \\
+\textbf{ h[5] correct } & 3234 \\
+\textbf{ h[6] correct } & 3251 \\
+\textbf{ h[7] correct } & 3261 \\
+\textbf{ h[8] correct } & 3213 \\
+\textbf{ h[9] correct } & 3258 \\
+\hline
+\end{tabular}
+\hspace{5pt}
+\vspace{2pt}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Experiment 3 statistics} & \\
+\hline
+\textbf{ TP } & 1316 \\
+\textbf{ FP } & 331 \\
+\textbf{ TN } & 1896 \\
+\textbf{ FN } & 138 \\
+\textbf{ P } &  1647 \\
+\textbf{ N } & 2034 \\
+\textbf{ FPR } & 0.16 \\
+\textbf{ TPR } & 0.80 \\
+\hline
+\textbf{ Precision } & 0.80\\
+\textbf{ Recall    } & 0.80\\
+\textbf{ Accuracy  } & 0.87\\
+\hline
+\end{tabular}
+\caption{h[t] represents each of ten weak classifiers used in training the ensemble hypothesis H}
+\end{figure}
+
+}
+
+\section[7]{Summary and Observations} {
+\vspace{2pt} \hspace{2pt}This experiment concerned the use of the adaboost boosting algorithm to increase the performance of an SVM classifier in classifying spam. The most notable characteristic of this experiment was its failure to reproduce the performance boost associated with the algorithm. This could be attributed to an error in implementing the algorithm, or it could be a quality of the boosting algorithm when used with strong classifiers.\\
+\vspace{2pt} \hspace{2pt}My personal feeling is that this approach should not make the results of the ensemble classifier worse than the component weak classifiers, no matter the type or accuracy of classifier used, and this leads me to believe that there is a problem in my implementation, rather than an inherent deficiency in the boosting algorithm itself.
+}
+
+\end{document}
